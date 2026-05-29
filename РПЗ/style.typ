@@ -88,8 +88,7 @@
     #align(center)[
     #set text(weight: "bold", size: 20pt)
     #set par(leading: 0.8em)
-    #upper[Лабораторная работа №#subject.at(0, default: "")] \
-    #upper[_по курсу «Численные методы»_] \
+    #upper[Курсовая работа] \
     #upper[_на тему:_] \
       #box(width: 90%, height: 1em, stroke: (bottom: 1pt)
         )[_#subject.at(1, default: "")_] \

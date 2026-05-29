@@ -1,0 +1,119 @@
+digraph G {
+    fontname="Helvetica,Arial,sans-serif"
+    node [fontname="Helvetica,Arial,sans-serif" fontsize=10]
+    edge [fontname="Helvetica,Arial,sans-serif" fontsize=9]
+    
+    // Настройки отображения графа
+    graph [rankdir=LR, overlap=false, splines=true, nodesep=0.5, ranksep=0.8];
+    node [shape=none, margin=0];
+
+    // --- СУЩНОСТИ (ТАБЛИЦЫ) ---
+
+    users [label=<
+        <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+            <tr><td bgcolor="#1f77b4" align="center"><font color="white"><b>users</b></font></td></tr>
+            <tr><td align="left">🔑 id : integer [PK]</td></tr>
+            <tr><td align="left">👤 first_name : varchar</td></tr>
+            <tr><td align="left">👤 last_name : varchar</td></tr>
+            <tr><td align="left">👤 patronymic : varchar</td></tr>
+            <tr><td align="left">📧 email : varchar [UQ]</td></tr>
+            <tr><td align="left">📅 created_at : timestamp</td></tr>
+        </table>
+    >];
+
+    projects [label=<
+        <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+            <tr><td bgcolor="#2ca02c" align="center"><font color="white"><b>projects</b></font></td></tr>
+            <tr><td align="left">🔑 id : integer [PK]</td></tr>
+            <tr><td align="left">📁 name : varchar</td></tr>
+            <tr><td align="left">📝 description : text</td></tr>
+            <tr><td align="left">📅 created_at : timestamp</td></tr>
+        </table>
+    >];
+
+    issues [label=<
+        <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+            <tr><td bgcolor="#d62728" align="center"><font color="white"><b>issues</b></font></td></tr>
+            <tr><td align="left">🔑 id : integer [PK]</td></tr>
+            <tr><td align="left">📌 title : varchar</td></tr>
+            <tr><td align="left">📝 description : text</td></tr>
+            <tr><td align="left">📅 created_at : timestamp</td></tr>
+            <tr><td align="left">🔗 project_id : integer [FK]</td></tr>
+        </table>
+    >];
+
+    teams [label=<
+        <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+            <tr><td bgcolor="#9467bd" align="center"><font color="white"><b>teams</b></font></td></tr>
+            <tr><td align="left">🔑 id : integer [PK]</td></tr>
+            <tr><td align="left">👥 name : varchar</td></tr>
+            <tr><td align="left">📝 description : text</td></tr>
+            <tr><td align="left">📅 created_at : timestamp</td></tr>
+        </table>
+    >];
+
+    project_members [label=<
+        <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+            <tr><td bgcolor="#7f7f7f" align="center"><font color="white"><b>project_members</b></font></td></tr>
+            <tr><td align="left">🔑 id : integer [PK]</td></tr>
+            <tr><td align="left">🔗 user_id : integer [FK]</td></tr>
+            <tr><td align="left">🔗 project_id : integer [FK]</td></tr>
+            <tr><td align="left">💼 role : varchar</td></tr>
+            <tr><td align="left">📅 joined_at : timestamp</td></tr>
+        </table>
+    >];
+
+    team_members [label=<
+        <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+            <tr><td bgcolor="#bcbd22" align="center"><font color="white"><b>team_members</b></font></td></tr>
+            <tr><td align="left">🔑 id : integer [PK]</td></tr>
+            <tr><td align="left">🔗 user_id : integer [FK]</td></tr>
+            <tr><td align="left">🔗 team_id : integer [FK]</td></tr>
+            <tr><td align="left">💼 role : varchar</td></tr>
+            <tr><td align="left">📅 joined_at : timestamp</td></tr>
+        </table>
+    >];
+
+    team_projects [label=<
+        <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+            <tr><td bgcolor="#17becf" align="center"><font color="white"><b>team_projects</b></font></td></tr>
+            <tr><td align="left">🔑 id : integer [PK]</td></tr>
+            <tr><td align="left">🔗 team_id : integer [FK]</td></tr>
+            <tr><td align="left">🔗 project_id : integer [FK]</td></tr>
+            <tr><td align="left">📅 assigned_at : timestamp</td></tr>
+        </table>
+    >];
+
+    comments [label=<
+        <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+            <tr><td bgcolor="#ff7f0e" align="center"><font color="white"><b>comments</b></font></td></tr>
+            <tr><td align="left">🔑 id : integer [PK]</td></tr>
+            <tr><td align="left">💬 text : text</td></tr>
+            <tr><td align="left">🔗 issue_id : integer [FK]</td></tr>
+            <tr><td align="left">🔗 user_id : integer [FK]</td></tr>
+            <tr><td align="left">📅 created_at : timestamp</td></tr>
+        </table>
+    >];
+
+    // --- СВЯЗИ (Стрелки в стиле Crow's Foot / Воронья лапка) ---
+    // o|-- означает (0,1) со стороны главной таблицы (хотя у нас везде 1:1, поэтому используем ||--)
+    // --{  означает "многие" (N)
+    // o{  означает (0, N)
+
+    // Users -> Промежуточные таблицы
+    users -> project_members [arrowhead=crow, arrowtail=tee, dir=both, label="(0,N)"];
+    users -> team_members    [arrowhead=crow, arrowtail=tee, dir=both, label="(0,N)"];
+    users -> comments        [arrowhead=crow, arrowtail=tee, dir=both, label="(0,N)"];
+
+    // Projects -> Промежуточные таблицы и задачи
+    projects -> project_members [arrowhead=crow, arrowtail=tee, dir=both, label="(0,N)"];
+    projects -> team_projects   [arrowhead=crow, arrowtail=tee, dir=both, label="(0,N)"];
+    projects -> issues          [arrowhead=crow, arrowtail=tee, dir=both, label="(0,N)"];
+
+    // Teams -> Промежуточные таблицы
+    teams -> team_members  [arrowhead=crow, arrowtail=tee, dir=both, label="(0,N)"];
+    teams -> team_projects [arrowhead=crow, arrowtail=tee, dir=both, label="(0,N)"];
+
+    // Issues -> Comments
+    issues -> comments [arrowhead=crow, arrowtail=tee, dir=both, label="(0,N)"];
+}
