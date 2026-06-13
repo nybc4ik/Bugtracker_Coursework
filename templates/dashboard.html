@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block title %}Доска задач{% endblock %}
+{% block styles %}
+<style>
+    .dashboard { display: flex; gap: 1.5rem; height: 100%; }
+    .sidebar { width: 240px; background: var(--sidebar); padding: 1rem; border-radius: 6px; border: 1px solid var(--border); height: fit-content; }
+    .sidebar h3 { margin-bottom: 0.8rem; font-size: 0.95rem; color: #666; text-transform: uppercase; }
+    .project-list { list-style: none; }
+    .project-list li { padding: 0.5rem; margin-bottom: 0.3rem; border-radius: 4px; cursor: pointer; background: #fafbfc; }
+    .project-list li:hover { background: #ebecf0; }
+    .project-list li.active { background: var(--accent); color: #fff; }
+
+    .kanban { flex: 1; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; align-items: start; }
+    .column { background: #ebecf0; padding: 0.8rem; border-radius: 6px; min-height: 400px; }
+    .column h3 { margin-bottom: 0.8rem; font-size: 0.9rem; color: #444; display: flex; justify-content: space-between; }
+    .card { background: var(--card); padding: 0.8rem; margin-bottom: 0.6rem; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); cursor: pointer; transition: transform 0.1s; }
+    .card:hover { transform: translateY(-2px); }
+    .card-title { font-weight: 500; margin-bottom: 0.3rem; }
+    .card-meta { font-size: 0.8rem; color: #888; display: flex; justify-content: space-between; }
+    .btn-add { background: transparent; border: 1px dashed #999; color: #666; width: 100%; padding: 0.5rem; cursor: pointer; border-radius: 4px; margin-top: 0.5rem; }
+    .btn-add:hover { background: #ddd; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+    <aside class="sidebar">
+        <h3>Проекты</h3>
+        <ul class="project-list">
+            <li class="active">📦 Core API</li>
+            <li>🌐 Frontend</li>
+            <li>🔒 Auth Module</li>
+            <li>+ Создать проект</li>
+        </ul>
+    </aside>
+
+    <div class="kanban">
+        <div class="column">
+            <h3>К выполнению <span>3</span></h3>
+            <div class="card"><div class="card-title">Исправить 500 на /users</div><div class="card-meta"><span>BUG-101</span><span>👤 Иван</span></div></div>
+            <div class="card"><div class="card-title">Обновить зависимости</div><div class="card-meta"><span>BUG-102</span><span>👤 Анна</span></div></div>
+            <button class="btn-add" onclick="openModal()">+ Добавить задачу</button>
+        </div>
+
+        <div class="column">
+            <h3>В работе <span>2</span></h3>
+            <div class="card"><div class="card-title">Рефакторинг БД</div><div class="card-meta"><span>BUG-098</span><span>👤 Петр</span></div></div>
+            <div class="card"><div class="card-title">Валидация email</div><div class="card-meta"><span>BUG-099</span><span>👤 Иван</span></div></div>
+        </div>
+
+        <div class="column">
+            <h3>Выполнено <span>1</span></h3>
+            <div class="card"><div class="card-title">Настроить CI/CD</div><div class="card-meta"><span>BUG-095</span><span>✅ Готово</span></div></div>
+        </div>
+    </div>
+</div>
+
+<!-- Модальное окно (статичное, управляется JS) -->
+<div id="taskModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:100;">
+    <div style="background:#fff; max-width:500px; margin:10% auto; padding:1.5rem; border-radius:8px; position:relative;">
+        <span onclick="closeModal()" style="position:absolute; top:10px; right:15px; cursor:pointer; font-size:1.5rem;">&times;</span>
+        <h3>Новая задача</h3>
+        <form style="margin-top:1rem;">
+            <input type="text" placeholder="Название" required style="width:100%; padding:0.5rem; margin-bottom:0.8rem; border:1px solid #ccc; border-radius:4px;">
+            <textarea placeholder="Описание" rows="3" style="width:100%; padding:0.5rem; margin-bottom:0.8rem; border:1px solid #ccc; border-radius:4px;"></textarea>
+            <select style="width:100%; padding:0.5rem; margin-bottom:0.8rem; border:1px solid #ccc; border-radius:4px;">
+                <option>Низкий приоритет</option><option selected>Средний</option><option>Высокий</option><option>Критический</option>
+            </select>
+            <button type="submit" style="width:100%; padding:0.6rem; background:var(--accent); color:#fff; border:none; border-radius:4px;">Создать</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    function openModal() { document.getElementById('taskModal').style.display = 'block'; }
+    function closeModal() { document.getElementById('taskModal').style.display = 'none'; }
+    document.getElementById('taskModal').addEventListener('click', function(e) { if(e.target === this) closeModal(); });
+</script>
+{% endblock %}

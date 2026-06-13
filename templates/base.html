@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BugTracker — {% block title %}Панель{% endblock %}</title>
+    <style>
+        :root { --bg: #f4f5f7; --sidebar: #ffffff; --card: #ffffff; --border: #dfe1e6; --text: #172b4d; --accent: #0052cc; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); height: 100vh; display: flex; flex-direction: column; }
+        .navbar { background: var(--accent); color: #fff; padding: 0.75rem 1.5rem; display: flex; justify-content: space-between; align-items: center; }
+        .navbar a { color: #fff; text-decoration: none; margin-left: 1.5rem; opacity: 0.9; }
+        .navbar a:hover { opacity: 1; text-decoration: underline; }
+        .container { display: flex; flex: 1; overflow: hidden; }
+        .main { flex: 1; padding: 1.5rem; overflow-y: auto; }
+        .flash { padding: 0.5rem 1rem; margin-bottom: 1rem; border-radius: 4px; }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        {% block styles %}{% endblock %}
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <span style="font-weight: 600; font-size: 1.1rem;">🐞 BugTracker</span>
+        <div>
+            <a href="/">Доска</a>
+            <a href="/members">Участники</a>
+            <a href="/logout">Выйти</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <div style="padding: 1rem; width: 100%;">
+              {% for cat, msg in messages %}
+                <div class="flash {{ cat }}">{{ msg }}</div>
+              {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
+        <main class="main">
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+</body>
+</html>
